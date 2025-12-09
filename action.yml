@@ -1,25 +1,59 @@
-name: My Composite Action
+name: Lint Terraform Configuration
 
-description: A composite action that ...
+description: A composite action for linting Terraform configuration.
 
 inputs:
-  my-input:
-    description: This is my input, there is no other input like it.
+  terraform-version:
+    description: The version of Terraform to use when running `terraform fmt` and `tflint`.
     required: false
-    default: The default description.
-
-outputs:
-  my-output:
-    description: The output this composite action produces.
-    value: steps.workflow-step.outputs.my-output
+    default: 1.14.1
+  tflint-version:
+    description: The version of TFLint to use when running `tflint`.
+    default: 0.60.0
+    required: false
+    type: string
+  hcp-terraform-hostname:
+    description: The hostname of the HCP Terraform organization used to source modules.
+    default: app.terraform.io
+    required: false
+    type: string
+secrets:
+  hcp-terraform-api-token:
+    description: The API token used to lint Terraform modules in a Private Module Registry.
+    required: false
 
 runs:
   using: composite
   steps:
-    - name: Workflow Step
-      id: workflow-step
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+      with:
+        terraform_version: ${{ inputs.terraform-version }}
+
+    - name: Check Terraform Formatting
       run: |-
-        printf 'my-output=%s\n' "${MY_INPUT}" >> "${GITHUB_OUTPUT}"
+        terraform fmt -recursive -check
       shell: sh
-      env:
-        MY_INPUT: inputs.my-input
+
+    - name: Setup TFLint
+      uses: terraform-linters/setup-tflint@v6
+      with:
+        tflint_version: v${{ inputs.tflint-version }}
+
+    - name: Export HCP Terraform Authentication Token
+      run: |
+        hostname="${{ inputs.hcp-terraform-hostname }}"
+        sanitized_hostname="$(./sanitize_hostname.sh "${hostname}")"
+        tf_token_name="TF_TOKEN_${sanitized_hostname}"
+        tf_token="${{ secrets.hcp-terraform-api-token }}"
+        # Export the authentication token.
+        printf '%s=%s' "${tf_token_name}" "${tf_token}" >> "${GITHUB_ENV}"
+      shell: sh
+      working-directory: ./src
+
+    - name: Lint Terraform Files
+      run: |-
+        terraform init -backend=false
+        tflint --init
+        tflint --recursive --format=compact
+      shell: sh
