@@ -1,8 +1,6 @@
-# composite-action-template
+# lint-terraform
 
-A GitHub repository template for creating a new Composite Action.
-
-> Composite actions allow you to collect a series of workflow job steps into a single action which you can then run as a single job step in multiple workflows.
+A composite action for linting Terraform configuration.
 
 ## Usage
 
@@ -15,25 +13,27 @@ permissions:
   contents: read
 
 jobs:
-  my-job:
-    name: My Job
+  terraform:
+    name: Terraform
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Use Composite Action
-        uses: craigsloggett-lab/my-composite-action@v1
+      - name: Lint Terraform Configuration
+        uses: craigsloggett/lint-terraform@v1
 ```
 
 ### Inputs
 
-| Input            | Required? | Default                    | Description                                        |
-| ---------------- | --------- | -------------------------- | -------------------------------------------------- |
-| `my-input`       | `false`   | `The default description.` | This is my input, there is no other input like it. |
+| Input                    | Required? | Default            | Description                                                                |
+| ------------------------ | --------- | ------------------ | -------------------------------------------------------------------------- |
+| `terraform-version`      | `false`   | `1.14.1`           | The version of Terraform to use when running `terraform fmt` and `tflint`. |
+| `tflint-version`         | `false`   | `0.60.0`           | The version of TFLint to use when running `tflint`.                        |
+| `hcp-terraform-hostname` | `false`   | `app.terraform.io` | The hostname of the HCP Terraform organization storing private modules.    |
 
-### Outputs
+### Secrets
 
-| Output      | Description                                |
-| ----------- | ------------------------------------------ |
-| `my-output` | The output this composite action produces. |
+| Input                    | Required? | Default | Description                                                                |
+| ------------------------ | --------- | ------- | -------------------------------------------------------------------------- |
+| `hcp-terraform-api-token` | `false`  | ``      | The API token used to lint Terraform modules in a Private Module Registry. |
