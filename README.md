@@ -34,6 +34,6 @@ jobs:
 
 ### Secrets
 
-| Input                     | Required? | Default | Description                                                                |
-| ------------------------- | --------- | ------- | -------------------------------------------------------------------------- |
-| `hcp-terraform-api-token` | `false`   | ` `     | The API token used to lint Terraform modules in a Private Module Registry. |
+| Input                     | Required? | Description                                                                |
+| ------------------------- | --------- | -------------------------------------------------------------------------- |
+| `hcp-terraform-api-token` | `false`   | The API token used to lint Terraform modules in a Private Module Registry. |
