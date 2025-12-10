@@ -40,19 +40,17 @@ runs:
       with:
         tflint_version: v${{ inputs.tflint-version }}
 
-    - name: Export HCP Terraform Authentication Token
-      run: |
-        hostname="${{ inputs.hcp-terraform-hostname }}"
-        sanitized_hostname="$(./sanitize_hostname.sh "${hostname}")"
-        tf_token_name="TF_TOKEN_${sanitized_hostname}"
-        tf_token="${{ inputs.hcp-terraform-api-token }}"
-        # Export the authentication token.
-        printf '%s=%s' "${tf_token_name}" "${tf_token}" >> "${GITHUB_ENV}"
+    - name: Export HCP Terraform Token
+      run: ${{ github.action_path }}/src/export_hcp_terraform_token.sh
       shell: sh
-      working-directory: ./src
+      env:
+        HCP_TERRAFORM_HOSTNAME: ${{ inputs.hcp-terraform-hostname }}
+        HCP_TERRAFORM_API_TOKEN: ${{ inputs.hcp-terraform-api-token }}
 
     - name: Lint Terraform Files
       run: |-
+        echo "${HCP_TERRAFORM_HOSTNAME}"
+        echo "${HCP_TERRAFORM_TOKEN}"
         terraform init -backend=false
         tflint --init
         tflint --recursive --format=compact
