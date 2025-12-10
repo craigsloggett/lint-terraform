@@ -17,10 +17,10 @@ inputs:
     default: app.terraform.io
     required: false
     type: string
-secrets:
   hcp-terraform-api-token:
     description: The API token used to lint Terraform modules in a Private Module Registry.
     required: false
+    type: string
 
 runs:
   using: composite
@@ -45,7 +45,7 @@ runs:
         hostname="${{ inputs.hcp-terraform-hostname }}"
         sanitized_hostname="$(./sanitize_hostname.sh "${hostname}")"
         tf_token_name="TF_TOKEN_${sanitized_hostname}"
-        tf_token="${{ secrets.hcp-terraform-api-token }}"
+        tf_token="${{ inputs.hcp-terraform-api-token }}"
         # Export the authentication token.
         printf '%s=%s' "${tf_token_name}" "${tf_token}" >> "${GITHUB_ENV}"
       shell: sh
