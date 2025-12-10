@@ -41,6 +41,7 @@ runs:
         tflint_version: v${{ inputs.tflint-version }}
 
     - name: Export HCP Terraform Token
+      if: inputs.hcp-terraform-api-token
       run: ${{ github.action_path }}/src/export_hcp_terraform_token.sh
       shell: sh
       env:
@@ -49,8 +50,6 @@ runs:
 
     - name: Lint Terraform Files
       run: |-
-        echo "${HCP_TERRAFORM_HOSTNAME}"
-        echo "${HCP_TERRAFORM_TOKEN}"
         terraform init -backend=false
         tflint --init
         tflint --recursive --format=compact
