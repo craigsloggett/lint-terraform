@@ -6,7 +6,7 @@ inputs:
   terraform-version:
     description: The version of Terraform to use when running `terraform fmt` and `tflint`.
     required: false
-    default: 1.14.1
+    default: 1.14.2
   tflint-version:
     description: The version of TFLint to use when running `tflint`.
     default: 0.60.0
