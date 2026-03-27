@@ -16,20 +16,15 @@ jobs:
     runs-on: ubuntu-24.04
 
     outputs:
-      new-release-published: ${{ steps.release.outputs.new_release_published }}
-      new-release-version: ${{ steps.release.outputs.new_release_version }}
+      new-release-published: ${{ steps.release.outputs.new-release-published }}
+      new-release-version: ${{ steps.release.outputs.new-release-version }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Release
+      - name: Create a GitHub Release
         id: release
-        uses: cycjimmy/semantic-release-action@b12c8f6015dc215fe37bc154d4ad456dd3833c90 # v6.0.0
+        uses: craigsloggett/create-github-release@fce9dea0a7dc63918e3e59956aa384d5beccd335 # v1.0.10
         with:
-          semantic_version: 25.0.2
-          extra_plugins: |
-            @semantic-release/git@10.0.1
-            conventional-changelog-conventionalcommits@9.1.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
