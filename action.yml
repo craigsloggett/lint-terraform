@@ -30,6 +30,12 @@ runs:
       with:
         terraform_version: ${{ inputs.terraform-version }}
 
+    - name: Validate Terraform Configuration
+      run: |-
+        terraform init -backend=false
+        terraform validate
+      shell: sh
+
     - name: Check Terraform Formatting
       run: |-
         terraform fmt -recursive -check
