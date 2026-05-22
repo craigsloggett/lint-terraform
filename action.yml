@@ -6,10 +6,10 @@ inputs:
   terraform-version:
     description: The version of Terraform to use when running `terraform fmt` and `tflint`.
     required: false
-    default: 1.14.3
+    default: 1.15.4
   tflint-version:
     description: The version of TFLint to use when running `tflint`.
-    default: 0.60.0
+    default: 0.62.1
     required: false
     type: string
   hcp-terraform-hostname:
