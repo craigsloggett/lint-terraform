@@ -11,16 +11,13 @@ inputs:
     description: The version of TFLint to use when running `tflint`.
     default: 0.62.1
     required: false
-    type: string
   hcp-terraform-hostname:
     description: The hostname of the HCP Terraform organization used to source modules.
     default: app.terraform.io
     required: false
-    type: string
   hcp-terraform-api-token:
     description: The API token used to lint Terraform modules in a Private Module Registry.
     required: false
-    type: string
 
 runs:
   using: composite
